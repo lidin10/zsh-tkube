@@ -1,0 +1,77 @@
+#compdef tkube
+
+# zsh completion for tkube command
+# Based on fish-tkube completion by lidin10
+
+_tkube() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :_tkube_commands_or_environments' \
+        '2: :_tkube_clusters' \
+        '*::arg:->args'
+}
+
+# Complete commands or environments for first argument
+_tkube_commands_or_environments() {
+    local commands environments
+    
+    # Special commands
+    commands=(
+        'help:Show help information'
+        'status:Show environments and authentication status'
+        'version:Show version information'
+    )
+    
+    # Get available environments
+    local env_list=()
+    if [[ -n "${TKUBE_ENVS[@]}" ]]; then
+        local i
+        for ((i=1; i<=${#TKUBE_ENVS[@]}; i+=2)); do
+            env_list+=("${TKUBE_ENVS[$i]}:Teleport environment")
+        done
+    fi
+    
+    # Combine commands and environments
+    _describe 'commands' commands
+    _describe 'environments' env_list
+}
+
+# Complete clusters for second argument
+_tkube_clusters() {
+    # Only complete clusters if first argument is a valid environment
+    local env="$words[2]"
+    
+    # Check if first argument is a special command
+    case "$env" in
+        help|status|version)
+            return 1
+            ;;
+    esac
+    
+    # Check if it's a valid environment
+    local proxy=""
+    local i
+    for ((i=1; i<=${#TKUBE_ENVS[@]}; i+=2)); do
+        if [[ "${TKUBE_ENVS[$i]}" == "$env" ]]; then
+            proxy="${TKUBE_ENVS[$((i+1))]}"
+            break
+        fi
+    done
+    
+    if [[ -n "$proxy" ]]; then
+        local clusters
+        clusters=($(tsh --proxy="$proxy" kube ls --format=json 2>/dev/null | jq -r '.[].kube_cluster_name' 2>/dev/null))
+        
+        if [[ ${#clusters[@]} -gt 0 ]]; then
+            local cluster_list=()
+            for cluster in "${clusters[@]}"; do
+                cluster_list+=("$cluster:Kubernetes cluster")
+            done
+            _describe 'clusters' cluster_list
+        fi
+    fi
+}
+
+_tkube "$@" 
