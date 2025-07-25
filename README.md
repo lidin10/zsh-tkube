@@ -29,33 +29,20 @@ A [Zsh shell](https://www.zsh.org/) plugin for quickly logging into Kubernetes c
 
 1. Clone this repository into Oh My Zsh custom plugins directory:
 ```zsh
-git clone https://github.com/lidin10/zsh-tkube.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-tkube
+git clone https://github.com/lidin10/zsh-tkube.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/tkube
 ```
 
 2. Add to your plugins list in `~/.zshrc`:
 ```zsh
-plugins=(... zsh-tkube)
+plugins=(... tkube)
 ```
 
-### Via Zinit
-
-Add to your `~/.zshrc`:
-```zsh
-zinit load lidin10/zsh-tkube
-```
-
-### Via Antigen
-
-Add to your `~/.zshrc`:
-```zsh
-antigen bundle lidin10/zsh-tkube
-```
 
 ### Manual Installation
 
 1. Clone this repository:
 ```zsh
-git clone https://github.com/lidin10/zsh-tkube.git ~/.zsh/plugins/zsh-tkube
+git clone https://github.com/lidin10/zsh-tkube.git ~/.zsh/plugins/tkube
 ```
 
 2. Add to your `~/.zshrc`:
